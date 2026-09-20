@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant System Presentation - Minimalist UI</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Modern Minimalist Design System */
+        :root {
+            --bg-site: #f8fafc;
+            --bg-panel: #ffffff;
+            --border-ui: #e2e8f0;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            
+            --clr-brand: #4f46e5;
+            --clr-brand-light: #e0e7ff;
+            --clr-success: #10b981;
+            --clr-warning: #f59e0b;
+            --clr-danger: #ef4444;
+            --clr-info: #06b6d4;
+            
+            --font-family: 'Outfit', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+            
+            --transition: all 0.2s ease;
+        }
+
+        /* Dark Mode variables */
+        [data-theme="dark"] {
+            --bg-site: #0f172a;
+            --bg-panel: #1e293b;
+            --border-ui: #334155;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background-color: var(--bg-site);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            line-height: 1.5;
+            transition: var(--transition);
+        }
+        
+        /* Container Layout */
+        .app-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Header navigation */
+        header {
+            background-color: var(--bg-panel);
+            border-bottom: 1px solid var(--border-ui);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .header-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .brand-logo {
+            background-color: var(--clr-brand);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        
+        .brand-title {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+        
+        .tab-btn:hover {
+            color: var(--text-main);
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        
+        [data-theme="dark"] .tab-btn:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+        
+        .tab-btn.active {
+            color: var(--clr-brand);
+            background-color: var(--clr-brand-light);
+            font-weight: 600;
+        }
+        
+        [data-theme="dark"] .tab-btn.active {
+            color: #a5b4fc;
+            background-color: rgba(79, 70, 229, 0.2);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-ui);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text-sub);
+            font-weight: 500;
+        }
+        
+        /* Section Panels */
+        .panel-section {
+            display: none;
+            margin-top: 30px;
+            animation: paneFadeIn 0.25s ease-out;
+        }
+        
+        .panel-section.active {
+            display: block;
+        }
+        
+        @keyframes paneFadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Dashboard visual layout */
+        .presentation-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        
+        /* Panel Blocks */
+        .block-card {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-ui);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+        }
+        
+        .block-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-ui);
+            padding-bottom: 10px;
+            margin-bottom: 16px;
+        }
+        
+        /* Form inputs & Preset buttons */
+        .input-row {
+            margin-bottom: 12px;
+        }
+        
+        .input-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-sub);
+            margin-bottom: 4px;
+            display: block;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-ui);
+            background-color: var(--bg-site);
+            color: var(--text-main);
+            font-size: 13px;
+            outline: none;
+        }
+        
+        .input-field:focus {
+            border-color: var(--clr-brand);
+        }
+        
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .preset-btn {
+            background-color: var(--bg-site);
+            border: 1px solid var(--border-ui);
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-main);
+            transition: var(--transition);
+            text-align: left;
+        }
+        
+        .preset-btn:hover {
+            border-color: var(--clr-brand);
+            background-color: var(--clr-brand-light);
+        }
+        
+        [data-theme="dark"] .preset-btn:hover {
+            background-color: rgba(79, 70, 229, 0.1);
+        }
+
+        .btn-ui {
+            width: 100%;
+            padding: 9px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-ui-brand {
+            background-color: var(--clr-brand);
+            color: white;
+        }
+        
+        .btn-ui-brand:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-ui-secondary {
+            background-color: var(--bg-site);
+            border: 1px solid var(--border-ui);
+            color: var(--text-main);
+        }
+        
+        .btn-ui-secondary:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+            border-color: var(--text-sub);
+        }
+        
+        .btn-ui-danger {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--clr-danger);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+        }
+        
+        .btn-ui-danger:hover {
+            background-color: var(--clr-danger);
+            color: white;
+        }
+        
+        /* Stats dashboard row */
+        .mini-stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .mini-stat-box {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-ui);
+            border-radius: 8px;
+            padding: 10px 14px;
+        }
+        
+        .mini-stat-lbl {
+            font-size: 11px;
+            color: var(--text-sub);
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .mini-stat-val {
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        
+        /* Visualizer DLL elements */
+        .visualizer-card {
+            min-height: 380px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .node-strip {
+            display: flex;
+            align-items: center;
+            overflow-x: auto;
+            padding: 20px 10px;
+            gap: 12px;
+            background-color: var(--bg-site);
+            border-radius: 8px;
+            border: 1px solid var(--border-ui);
+            flex: 1;
+            position: relative;
+        }
+        
+        .empty-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-sub);
+            font-size: 13px;
+            text-align: center;
+        }
+        
+        /* DLL Node Box */
+        .node-box {
+            background-color: var(--bg-panel);
+            border: 1.5px solid var(--border-ui);
+            border-radius: 8px;
+            width: 210px;
+            min-width: 210px;
+            padding: 12px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .node-box:hover {
+            border-color: var(--clr-brand);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .node-box.selected {
+            border-color: var(--clr-warning);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+        }
+        
+        .node-box-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--clr-brand);
+            border-bottom: 1px solid var(--border-ui);
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+        }
+        
+        .node-box-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+        
+        .node-box-lbl {
+            color: var(--text-sub);
+        }
+        
+        .node-box-val {
+            font-weight: 500;
+        }
+        
+        .node-box-val.name {
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .node-box-footer {
+            border-top: 1px solid var(--border-ui);
+            margin-top: 8px;
+            padding-top: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .badge-status {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .badge-pending { background-color: #fef3c7; color: #d97706; }
+        .badge-preparing { background-color: #e0e7ff; color: #4f46e5; }
+        .badge-ready { background-color: #ecfeff; color: #0891b2; }
+        .badge-served { background-color: #d1fae5; color: #059669; }
+        
+        /* Node link separator */
+        .node-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            min-width: 44px;
+            color: var(--text-sub);
+            font-family: var(--font-mono);
+            font-size: 9px;
+            font-weight: 600;
+        }
+        
+        .link-arrow {
+            width: 32px;
+            height: 1px;
+            background-color: var(--border-ui);
+            position: relative;
+        }
+        
+        .link-arrow.next::after {
+            content: '';
+            position: absolute;
+            right: -2px;
+            top: -3px;
+            border: 3px solid transparent;
+            border-left-color: var(--border-ui);
+        }
+        
+        .link-arrow.prev::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: -3px;
+            border: 3px solid transparent;
+            border-right-color: var(--border-ui);
+        }
+        
+        /* Visualizer Footer simulation */
+        .traverse-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            font-size: 13px;
+        }
+        
+        /* Code viewer tab structure */
+        .code-grid {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 20px;
+        }
+        
+        .code-list-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .code-list-btn {
+            background: none;
+            border: 1px solid var(--border-ui);
+            border-radius: 6px;
+            padding: 10px 14px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-sub);
+            cursor: pointer;
+            font-family: var(--font-mono);
+            transition: var(--transition);
+        }
+        
+        .code-list-btn.active {
+            border-color: var(--clr-brand);
+            background-color: var(--clr-brand-light);
+            color: var(--clr-brand);
+        }
+        
+        [data-theme="dark"] .code-list-btn.active {
+            background-color: rgba(79, 70, 229, 0.15);
+            color: #a5b4fc;
+        }
+        
+        .code-box-display {
+            background-color: #0f172a;
+            border: 1px solid var(--border-ui);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .code-box-display pre {
+            padding: 20px;
+            overflow-x: auto;
+            max-height: 500px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: #e2e8f0;
+            text-align: left;
+        }
+        
+        /* Viva Q&A styling */
+        .viva-box {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .viva-row {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-ui);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .viva-q {
+            padding: 14px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .viva-a {
+            display: none;
+            padding: 14px 20px;
+            font-size: 13px;
+            color: var(--text-sub);
+            border-top: 1px solid var(--border-ui);
+            background-color: var(--bg-site);
+        }
+        
+        .viva-row.active .viva-a {
+            display: block;
+        }
+        
+        /* Thermal invoice styling */
+        .bill-invoice-card {
+            background-color: white;
+            color: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            max-width: 320px;
+            margin: 20px auto;
+            box-shadow: var(--shadow-lg);
+            display: none;
+        }
+        
+        .bill-invoice-card.active {
+            display: block;
+        }
+
+        .bill-line {
+            border-top: 1px dashed #94a3b8;
+            margin: 8px 0;
+        }
+        
+        /* Syntaxes highlighting */
+        .keyword { color: #f43f5e; font-weight: 600; }
+        .type { color: #38bdf8; }
+        .comment { color: #64748b; font-style: italic; }
+        .string { color: #34d399; }
+        
+        /* Simple guide helper banner */
+        .invigilator-tip-box {
+            background-color: var(--clr-brand-light);
+            border: 1px solid rgba(79, 70, 229, 0.15);
+            border-radius: 8px;
+            padding: 14px 20px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: #312e81;
+        }
+        [data-theme="dark"] .invigilator-tip-box {
+            background-color: rgba(79, 70, 229, 0.1);
+            color: #c7d2fe;
+            border-color: rgba(165, 180, 252, 0.15);
+        }
+    </style>
+</head>
+<body data-theme="light">
+
+    <header>
+        <div class="app-container header-wrap">
+            <div class="brand">
+                <div class="brand-logo">R</div>
+                <div class="brand-title">Restaurant Management System</div>
+            </div>
+            
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="showPane('demo', this)">Simulator</button>
+            </div>
+            
+            <button class="theme-toggle" onclick="toggleTheme()">Dark Theme</button>
+        </div>
+    </header>
+
+    <div class="app-container" style="padding-top: 24px;">
+        
+
+
+        <!-- SIMULATOR TAB -->
+        <div id="pane-demo" class="panel-section active">
+            
+            <div class="mini-stats-row">
+                <div class="mini-stat-box">
+                    <div class="mini-stat-lbl">Active Orders</div>
+                    <div class="mini-stat-val" id="cnt-total">0</div>
+                </div>
+                <div class="mini-stat-box">
+                    <div class="mini-stat-lbl">Pending</div>
+                    <div class="mini-stat-val" id="cnt-pending">0</div>
+                </div>
+                <div class="mini-stat-box">
+                    <div class="mini-stat-lbl">Served</div>
+                    <div class="mini-stat-val" id="cnt-served">0</div>
+                </div>
+                <div class="mini-stat-box">
+                    <div class="mini-stat-lbl">Revenue</div>
+                    <div class="mini-stat-val" id="cnt-rev">Rs. 0.00</div>
+                </div>
+            </div>
+            
+            <div class="presentation-grid">
+                
+                <!-- Controls sidebar -->
+                <div class="sidebar-block">
+                    
+                    <div class="block-card">
+                        <div class="block-title">Create Order Node</div>
+                        
+                        <div class="input-row" style="margin-bottom: 16px;">
+                            <span class="input-label" style="font-weight:600; margin-bottom:6px;">1-Click Demo Presets</span>
+                            <div class="preset-grid">
+                                <button class="preset-btn" onclick="addPreset('Rajesh Mishra', 12, 'Paneer Tikka', 2, 250)">Paneer Tikka</button>
+                                <button class="preset-btn" onclick="addPreset('Sunita Sharma', 5, 'Masala Dosa', 3, 120)">Masala Dosa</button>
+                                <button class="preset-btn" onclick="addPreset('Amit Verma', 8, 'Veg Biryani', 1, 280)">Veg Biryani</button>
+                                <button class="preset-btn" onclick="addPreset('Pooja Sen', 14, 'Cold Coffee', 2, 90)">Cold Coffee</button>
+                            </div>
+                        </div>
+
+                        <form id="order-form" onsubmit="event.preventDefault(); addCustomOrder();">
+                            <div class="input-row">
+                                <label class="input-label">Customer Name</label>
+                                <input type="text" id="in-name" class="input-field" placeholder="Name" required>
+                            </div>
+                            <div class="input-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                <div>
+                                    <label class="input-label">Table</label>
+                                    <input type="number" id="in-table" class="input-field" placeholder="Table" required>
+                                </div>
+                                <div>
+                                    <label class="input-label">Quantity</label>
+                                    <input type="number" id="in-qty" class="input-field" placeholder="Qty" required>
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <label class="input-label">Food Item</label>
+                                <input type="text" id="in-food" class="input-field" placeholder="Food Name" required>
+                            </div>
+                            <div class="input-row">
+                                <label class="input-label">Price per unit (Rs.)</label>
+                                <input type="number" id="in-price" class="input-field" placeholder="Price" required>
+                            </div>
+                            <button type="submit" class="btn-ui btn-ui-brand">Add Node to Tail</button>
+                        </form>
+                    </div>
+
+                    <div class="block-card">
+                        <div class="block-title">Modify Pointers / Status</div>
+                        <div class="input-row">
+                            <label class="input-label">Select Node by ID</label>
+                            <input type="number" id="sel-id" class="input-field" placeholder="e.g. 1001">
+                        </div>
+                        <div class="input-row">
+                            <label class="input-label">Change Status</label>
+                            <select id="sel-status" class="input-field">
+                                <option value="Pending">Pending</option>
+                                <option value="Preparing">Preparing</option>
+                                <option value="Ready">Ready</option>
+                                <option value="Served">Served</option>
+                            </select>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:6px; margin-top:12px;">
+                            <button class="btn-ui btn-ui-secondary" onclick="updateNodeStatus()">Update Status</button>
+                            <button class="btn-ui btn-ui-secondary" onclick="generateInvoice()">Print Bill Receipt</button>
+                            <button class="btn-ui btn-ui-danger" onclick="deleteNode()">Delete Node (Cancel)</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Visual DLL area -->
+                <div class="visualizer-column">
+                    
+                    <div class="block-card visualizer-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                            <span style="font-weight:600; font-size:14px; color:var(--text-sub);" id="ptr-label">HEAD: NULL | TAIL: NULL</span>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn-ui btn-ui-secondary" style="padding:4px 8px; font-size:11px;" onclick="traverse('forward')">Forward Traversal</button>
+                                <button class="btn-ui btn-ui-secondary" style="padding:4px 8px; font-size:11px;" onclick="traverse('backward')">Backward Traversal</button>
+                            </div>
+                        </div>
+
+                        <!-- Rendered elements container -->
+                        <div class="node-strip" id="node-strip">
+                            <div class="empty-placeholder">
+                                📭 Empty List. Click any "Preset" button to insert nodes.
+                            </div>
+                        </div>
+                        
+                        <!-- Invoice display row -->
+                        <div class="bill-invoice-card" id="invoice-card">
+                            <div style="text-align:center; font-weight:700; margin-bottom:8px; font-size:13px;">GOURMET HAVEN BISTRO</div>
+                            <div style="text-align:center; margin-bottom:10px;">Invoicing Receipt</div>
+                            <div class="bill-line"></div>
+                            <div class="node-box-row"><span>ID: <strong id="inv-id">1001</strong></span><span>Table: <strong id="inv-table">05</strong></span></div>
+                            <div class="node-box-row"><span>Cust: <strong id="inv-cust">Rajesh</strong></span><span>Status: <strong id="inv-stat">Pending</strong></span></div>
+                            <div class="bill-line"></div>
+                            <div class="node-box-row"><span id="inv-item">Paneer Tikka (2)</span><span id="inv-item-bill">500.00</span></div>
+                            <div class="bill-line"></div>
+                            <div class="node-box-row"><span>Subtotal</span><span id="inv-sub">500.00</span></div>
+                            <div class="node-box-row"><span>CGST (2.5%)</span><span id="inv-cgst">12.50</span></div>
+                            <div class="node-box-row"><span>SGST (2.5%)</span><span id="inv-sgst">12.50</span></div>
+                            <div class="bill-line"></div>
+                            <div class="node-box-row" style="font-weight:700;"><span>Grand Total</span><span id="inv-grand">Rs. 525.00</span></div>
+                            <div class="bill-line" style="border-top-style:double;"></div>
+                            <div style="text-align:center; font-size:10px; color:#64748b; margin-top:8px;">Thank you! Visit again.</div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', targetTheme);
+            document.querySelector('.theme-toggle').innerText = targetTheme === 'dark' ? 'Light Theme' : 'Dark Theme';
+        }
+
+        // Tab Switching
+        function showPane(paneId, button) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.panel-section').forEach(section => section.classList.remove('active'));
+            
+            button.classList.add('active');
+            document.getElementById(`pane-${paneId}`).classList.add('active');
+        }
+
+
+
+
+        // API Logic connected to C++ Backend
+        let orders = [];
+        const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:8080' : '';
+
+        async function fetchOrders() {
+            try {
+                const response = await fetch(`${API_BASE}/api/orders`);
+                if (response.ok) {
+                    orders = await response.json();
+                    refreshVisuals();
+                } else {
+                    console.error("Failed to fetch orders");
+                }
+            } catch (err) {
+                console.error("Error fetching orders:", err);
+            }
+        }
+
+        function refreshVisuals() {
+            const container = document.getElementById('node-strip');
+            
+            // Stats
+            document.getElementById('cnt-total').innerText = orders.length;
+            document.getElementById('cnt-pending').innerText = orders.filter(o => o.status === 'Pending').length;
+            document.getElementById('cnt-served').innerText = orders.filter(o => o.status === 'Served').length;
+            
+            let revenue = orders.reduce((sum, o) => sum + (o.qty * o.price), 0);
+            document.getElementById('cnt-rev').innerText = `Rs. ${revenue.toFixed(2)}`;
+
+            if (orders.length === 0) {
+                container.innerHTML = `<div class="empty-placeholder">📭 Empty List. Add some orders to see them here!</div>`;
+                document.getElementById('ptr-label').innerText = "HEAD: NULL | TAIL: NULL";
+                return;
+            }
+
+            document.getElementById('ptr-label').innerText = `HEAD: Node ${orders[0].id} | TAIL: Node ${orders[orders.length-1].id}`;
+            container.innerHTML = '';
+
+            orders.forEach((o, i) => {
+                const box = document.createElement('div');
+                box.className = 'node-box';
+                box.id = `box-${o.id}`;
+                
+                let sBadge = 'badge-pending';
+                if (o.status === 'Preparing') sBadge = 'badge-preparing';
+                if (o.status === 'Ready') sBadge = 'badge-ready';
+                if (o.status === 'Served') sBadge = 'badge-served';
+                if (o.status === 'Completed') sBadge = 'badge-ready';
+
+                box.innerHTML = `
+                    <div class="node-box-header">
+                        <span>Node: ${o.id}</span>
+                        <span>Table ${o.table}</span>
+                    </div>
+                    <div class="node-box-row"><span class="node-box-lbl">Cust:</span><span class="node-box-val name">${o.name}</span></div>
+                    <div class="node-box-row"><span class="node-box-lbl">Food:</span><span class="node-box-val name">${o.food}</span></div>
+                    <div class="node-box-row"><span class="node-box-lbl">Qty:</span><span class="node-box-val">${o.qty}</span></div>
+                    <div class="node-box-footer">
+                        <span class="badge-status ${sBadge}">${o.status}</span>
+                        <span style="font-weight:700; color:var(--clr-brand);">Rs. ${o.qty * o.price}</span>
+                    </div>
+                `;
+                container.appendChild(box);
+
+                // Add arrow link separator
+                if (i < orders.length - 1) {
+                    const link = document.createElement('div');
+                    link.className = 'node-link';
+                    link.innerHTML = `
+                        <span>next</span>
+                        <div class="link-arrow next prev"></div>
+                        <span style="margin-top:-2px;">prev</span>
+                    `;
+                    container.appendChild(link);
+                }
+            });
+        }
+
+        async function addPreset(name, table, food, qty, price) {
+            try {
+                const response = await fetch(`${API_BASE}/api/orders`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, table, food, qty, price })
+                });
+                if (response.ok) {
+                    await fetchOrders();
+                    // Scroll to end
+                    setTimeout(() => {
+                        const s = document.getElementById('node-strip');
+                        s.scrollLeft = s.scrollWidth;
+                    }, 50);
+                } else {
+                    alert('Failed to add order');
+                }
+            } catch (err) {
+                alert('Connection error: ' + err.message);
+            }
+        }
+
+        async function addCustomOrder() {
+            const name = document.getElementById('in-name').value;
+            const table = parseInt(document.getElementById('in-table').value);
+            const qty = parseInt(document.getElementById('in-qty').value);
+            const food = document.getElementById('in-food').value;
+            const price = parseFloat(document.getElementById('in-price').value);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/orders`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, table, food, qty, price })
+                });
+                if (response.ok) {
+                    await fetchOrders();
+                    document.getElementById('order-form').reset();
+                } else {
+                    alert('Failed to add order');
+                }
+            } catch (err) {
+                alert('Connection error: ' + err.message);
+            }
+        }
+
+        async function updateNodeStatus() {
+            const id = parseInt(document.getElementById('sel-id').value);
+            const stat = document.getElementById('sel-status').value;
+            try {
+                const response = await fetch(`${API_BASE}/api/orders/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, status: stat })
+                });
+                if (response.ok) {
+                    await fetchOrders();
+                } else {
+                    alert('Failed to update status');
+                }
+            } catch (err) {
+                alert('Connection error: ' + err.message);
+            }
+        }
+
+        async function deleteNode() {
+            const id = parseInt(document.getElementById('sel-id').value);
+            try {
+                const response = await fetch(`${API_BASE}/api/orders?id=${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    await fetchOrders();
+                    document.getElementById('sel-id').value = '';
+                    document.getElementById('invoice-card').classList.remove('active');
+                } else {
+                    alert('Failed to delete order');
+                }
+            } catch (err) {
+                alert('Connection error: ' + err.message);
+            }
+        }
+
+        function generateInvoice() {
+            const id = parseInt(document.getElementById('sel-id').value);
+            const o = orders.find(o => o.id === id);
+            if (!o) {
+                alert('Order ID not found');
+                return;
+            }
+
+            document.getElementById('inv-id').innerText = o.id;
+            document.getElementById('inv-table').innerText = String(o.table).padStart(2, '0');
+            document.getElementById('inv-cust').innerText = o.name;
+            document.getElementById('inv-stat').innerText = o.status;
+            document.getElementById('inv-item').innerText = `${o.food} (${o.qty} x ${o.price})`;
+            
+            const sub = o.qty * o.price;
+            const cgst = sub * 0.025;
+            const sgst = sub * 0.025;
+            const grand = sub + cgst + sgst;
+
+            document.getElementById('inv-item-bill').innerText = sub.toFixed(2);
+            document.getElementById('inv-sub').innerText = sub.toFixed(2);
+            document.getElementById('inv-cgst').innerText = cgst.toFixed(2);
+            document.getElementById('inv-sgst').innerText = sgst.toFixed(2);
+            document.getElementById('inv-grand').innerText = `Rs. ${grand.toFixed(2)}`;
+
+            document.getElementById('invoice-card').classList.add('active');
+            
+            // Remove selection highlight on others
+            document.querySelectorAll('.node-box').forEach(b => b.classList.remove('selected'));
+            document.getElementById(`box-${id}`).classList.add('selected');
+        }
+
+        async function traverse(direction) {
+            if (orders.length === 0) return;
+            document.querySelectorAll('.node-box').forEach(b => b.classList.remove('selected'));
+            
+            let list = [...orders];
+            if (direction === 'backward') list.reverse();
+
+            for (let i = 0; i < list.length; i++) {
+                const id = list[i].id;
+                const box = document.getElementById(`box-${id}`);
+                if (box) {
+                    box.classList.add('selected');
+                    box.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    await new Promise(r => setTimeout(r, 800));
+                    box.classList.remove('selected');
+                }
+            }
+        }
+
+        // Initialize orders on load
+        fetchOrders();
+    </script>
+</body>
+</html>
